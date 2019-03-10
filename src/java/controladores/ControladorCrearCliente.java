@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import modelo.DAOs.DAOFactory;
 import modelo.DTOs.ClienteDTO;
-import modelo.DTOs.PersonaDTO;
 import util.Conexion;
 import util.logs.LoggerFactory;
 import util.logs.LoggerInterface;

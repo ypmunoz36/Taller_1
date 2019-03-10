@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import modelo.DAOs.DAOFactory;
-import modelo.DTOs.ClienteDTO;
-import modelo.DTOs.PersonaDTO;
 import modelo.DTOs.VentaDTO;
 import util.Conexion;
 

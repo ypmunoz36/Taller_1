@@ -158,7 +158,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../examples/crearVentas.jsp">
+            <a class="nav-link" href="../paginas/crearVentas.jsp">
               <i class="ni ni-cart text-orange"></i> Ventas
             </a>
           </li>

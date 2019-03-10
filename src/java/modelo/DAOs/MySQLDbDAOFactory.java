@@ -33,9 +33,7 @@ public class MySQLDbDAOFactory extends DAOFactory {
 	return mysqlDS.getConnection();
   }
     
-    public PersonaDAO getPersonaDAO() {
-      return new PersonaMySQLDbDAO();
-    }
+    
 
     @Override
     public ClienteDAO getClienteDAO() {

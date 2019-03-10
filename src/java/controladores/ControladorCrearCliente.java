@@ -14,10 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import modelo.DAOs.DAOFactory;
-import modelo.DAOs.PersonaDAO;
 import modelo.DTOs.ClienteDTO;
 import modelo.DTOs.PersonaDTO;
-import util.MyDataSourceFactory;
+import util.Conexion;
+import util.logs.LoggerFactory;
+import util.logs.LoggerInterface;
 
 /**
  *
@@ -64,15 +65,15 @@ public class ControladorCrearCliente extends HttpServlet {
         c.setTipo(Integer.parseInt(tipop));
         c.setDescripcion(descripcion);
         
-        DataSource ds = null;
+        Conexion sql = Conexion.getConnection();
         
-        ds = MyDataSourceFactory.getMySQLDataSource();
-        
-        DAOFactory pbd = (DAOFactory) DAOFactory.getDAOFactory(1);
-        pbd.getClienteDAO().insertCliente(ds, c);
-        
-        System.out.println("ciudad id : " +  c.getCiudad());
-        System.out.println("DataSource: " +  ds);
+        LoggerFactory factory = new LoggerFactory();
+        LoggerInterface logger = factory.getLogger();
+        if(sql!= null)
+            logger.log("CrearCliente se conecto correctamente a mysql singleton");
+
+        DAOFactory pbd =  DAOFactory.getDAOFactory(1);
+        pbd.getClienteDAO().insertCliente(sql, c);
         
         RequestDispatcher rd = request.getRequestDispatcher("./paginas/crearCliente.jsp");
         rd.forward(request, response);

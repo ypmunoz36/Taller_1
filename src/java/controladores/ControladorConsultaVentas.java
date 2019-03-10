@@ -16,9 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import modelo.DAOs.DAOFactory;
-import modelo.DAOs.PersonaDAO;
 import modelo.DTOs.VentaDTO;
-import util.MyDataSourceFactory;
+import util.Conexion;
+import util.logs.LoggerFactory;
+import util.logs.LoggerInterface;
 
 /**
  *
@@ -39,12 +40,18 @@ public class ControladorConsultaVentas extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
        
-        DataSource ds = null;
+       
         VentaDTO v = new VentaDTO();
-        ds = MyDataSourceFactory.getMySQLDataSource();
         
-        DAOFactory pbd = (DAOFactory) DAOFactory.getDAOFactory(1); // Polimorfismo DAOFactory toma la forma de MysqlDbDaofactory
-        ArrayList datos = pbd.getVentaDAO().selectVentas(ds,v );
+        Conexion sql = Conexion.getConnection();
+        
+      LoggerFactory factory = new LoggerFactory();
+        LoggerInterface logger = factory.getLogger();
+        if(sql!= null)
+            logger.log("ConsultaVentas se conecto correctamente a mysql singleton");
+        
+        DAOFactory pbd =  DAOFactory.getDAOFactory(1); // Polimorfismo DAOFactory toma la forma de MysqlDbDaofactory
+        ArrayList datos = pbd.getVentaDAO().selectVentas(sql,v );
 
         request.setAttribute("listaDatos", datos);
         RequestDispatcher rd = request.getRequestDispatcher("./paginas/respuestaConsulta.jsp");

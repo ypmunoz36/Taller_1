@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Logger;
 import modelo.DTOs.VehiculoDTO;
+import util.Conexion;
 
 /**
  *
@@ -25,20 +26,20 @@ import modelo.DTOs.VehiculoDTO;
 public class VehiculoMySQLDAO implements VehiculoDAO {
 
     @Override
-    public boolean insertVehiculo(DataSource ds, VehiculoDTO v) {
+    public boolean insertVehiculo(Conexion conexion, VehiculoDTO v) {
         boolean respuesta = false;
         PreparedStatement pstmt = null;
         Connection con = null;
              
         try {
-            con = ds.getConnection();
+            con = conexion.conn;
             Logger.getLogger(VehiculoMySQLDAO.class.getName()).log(Level.INFO, "Ejecutando insert...");
             
-            pstmt = con.prepareStatement("INSERT INTO venta" +
-                                "(cliente_cli_identificacion," +
-                                "vehiculo_idcarro," +
-                                "ven_fecha," +
-                                "ven_precio," +
+            pstmt = con.prepareStatement("INSERT INTO vehiculo" +
+                                "(vin," +
+                                "matricula," +
+                                "anio_fabricacion," +
+                                "cilindraje," +
                                 "id_tipo_combustible," +
                                 "modelo," +
                                 "color," +
@@ -65,7 +66,7 @@ public class VehiculoMySQLDAO implements VehiculoDAO {
             pstmt.setInt(13, v.getPrecioVenta());
             pstmt.setString(14, v.getNombre());
             pstmt.execute();
-            con.close();
+          
             respuesta = true;
             
         } catch (SQLException ex) {
@@ -75,13 +76,15 @@ public class VehiculoMySQLDAO implements VehiculoDAO {
     }
 
     @Override
-    public VehiculoDTO selectVehiculo(DataSource ds, VehiculoDTO v) {
+    public VehiculoDTO selectVehiculo(Conexion conexion, VehiculoDTO v) {
          VehiculoDTO rta = new VehiculoDTO();
         
+          Connection con = null;
+          con = conexion.conn;
         Statement s;
         try {
             
-            s = ds.getConnection().createStatement();
+            s = con.createStatement();
             ResultSet rs = s.executeQuery ("select " +
                 "vin," +
                 "matricula," +
@@ -115,9 +118,9 @@ public class VehiculoMySQLDAO implements VehiculoDAO {
                 
             }
            
-            s.close();
+           
         } catch (SQLException ex) {
-            Logger.getLogger(PersonaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(VehiculoMySQLDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         
@@ -125,12 +128,13 @@ public class VehiculoMySQLDAO implements VehiculoDAO {
     }
 
     @Override
-    public boolean updateVehiculo(DataSource ds, VehiculoDTO v) {
-         Connection con = null;
+    public boolean updateVehiculo(Conexion conexion, VehiculoDTO v) {
+        Connection con = null;
         PreparedStatement pstmt = null;
         boolean respuesta = false;
+         con = conexion.conn;
+        
         try {            
-             con = ds.getConnection();
             Logger.getLogger(VehiculoMySQLDAO.class.getName()).log(Level.INFO, "Ejecutando update...");
             
             pstmt = con.prepareStatement("update vehiculo "
@@ -167,7 +171,8 @@ public class VehiculoMySQLDAO implements VehiculoDAO {
             pstmt.setString(14, v.getVin());
             pstmt.executeUpdate();
             
-            con.close();
+          
+            
             
             respuesta = true;
         } catch (SQLException ex) {

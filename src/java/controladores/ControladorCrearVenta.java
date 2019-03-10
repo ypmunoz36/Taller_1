@@ -14,11 +14,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import modelo.DAOs.DAOFactory;
-import modelo.DAOs.PersonaDAO;
 import modelo.DTOs.ClienteDTO;
 import modelo.DTOs.PersonaDTO;
 import modelo.DTOs.VentaDTO;
-import util.MyDataSourceFactory;
+import util.Conexion;
+
+import org.apache.log4j.Logger;
+import util.logs.LoggerFactory;
+import util.logs.LoggerInterface;
 
 /**
  *
@@ -38,14 +41,12 @@ public class ControladorCrearVenta extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
        
-        
         String identificacionCliente = request.getParameter("input-identificacionV");
         String vinAuto = request.getParameter("input-vinv");
         String fechaVenta = request.getParameter("input-fechav");
         String precioVenta = request.getParameter("input-valorv");
         String asesor = request.getParameter("input-asesor");
 
-        
         VentaDTO v = new VentaDTO();
         v.setIdentificacionCliente(Integer.parseInt(identificacionCliente));
         v.setVinAuto(vinAuto);
@@ -53,12 +54,17 @@ public class ControladorCrearVenta extends HttpServlet {
         v.setPrecioVenta(Integer.parseInt(precioVenta));
         v.setAsesor(asesor);
         
-        DataSource ds = null;
+      
         
-        ds = MyDataSourceFactory.getMySQLDataSource();
+        Conexion sql = Conexion.getConnection();
         
-        DAOFactory pbd = (DAOFactory) DAOFactory.getDAOFactory(1);
-        pbd.getVentaDAO().insertVenta(ds, v);
+        LoggerFactory factory = new LoggerFactory();
+        LoggerInterface logger = factory.getLogger();
+        if(sql!= null)
+            logger.log("CrearVenta se conecto correctamente a mysql singleton");
+        
+        DAOFactory pbd =  DAOFactory.getDAOFactory(1);
+        pbd.getVentaDAO().insertVenta(sql, v);
         
         RequestDispatcher rd = request.getRequestDispatcher("./paginas/crearVentas.jsp");
         rd.forward(request, response);

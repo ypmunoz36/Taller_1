@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
-public class MyDataSourceFactory {
+public class MyDataSourceFactorys {
 
     public static DataSource getMySQLDataSource() {
 

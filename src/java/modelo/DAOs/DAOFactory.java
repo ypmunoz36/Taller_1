@@ -14,7 +14,6 @@ public abstract class DAOFactory {
   // List of DAO types supported by the factory
   public static final int MYSQL = 1;
   
-  public abstract PersonaDAO getPersonaDAO();
   public abstract ClienteDAO getClienteDAO();
   public abstract VehiculoDAO getVehiculoDAO();
   public abstract VentaDAO getVentaDAO();

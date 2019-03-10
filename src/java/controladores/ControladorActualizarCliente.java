@@ -16,7 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import modelo.DAOs.DAOFactory;
 import modelo.DTOs.ClienteDTO;
-import util.MyDataSourceFactory;
+import util.Conexion;
+import util.logs.LoggerFactory;
+import util.logs.LoggerInterface;
 
 /**
  *
@@ -63,12 +65,15 @@ public class ControladorActualizarCliente extends HttpServlet {
         c.setTipo(Integer.parseInt(tipop));
         c.setDescripcion(descripcion);
         
-        DataSource ds = null;
+         Conexion sql = Conexion.getConnection();
         
-        ds = MyDataSourceFactory.getMySQLDataSource();
+      LoggerFactory factory = new LoggerFactory();
+        LoggerInterface logger = factory.getLogger();
+        if(sql!= null)
+            logger.log("ActualizarCliente se conecto correctamente a mysql singleton");
         
-        DAOFactory pbd = (DAOFactory) DAOFactory.getDAOFactory(1);
-        pbd.getClienteDAO().updateCliente(ds, c);
+        DAOFactory pbd =  DAOFactory.getDAOFactory(1);
+        pbd.getClienteDAO().updateCliente(sql, c);
         
         RequestDispatcher rd = request.getRequestDispatcher("./paginas/crearCliente.jsp");
         rd.forward(request, response);

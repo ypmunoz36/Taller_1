@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Logger;
 import modelo.DTOs.VentaDTO;
+import util.Conexion;
 
 /**
  *
@@ -25,14 +26,13 @@ import modelo.DTOs.VentaDTO;
 public class VentaMySQLDAO implements VentaDAO {
 
     @Override
-    public boolean insertVenta(DataSource ds, VentaDTO v) {
+    public boolean insertVenta(Conexion conexion, VentaDTO v) {
         
          boolean respuesta = false;
         PreparedStatement pstmt = null;
-        Connection con = null;
+        Connection con = conexion.conn;
              
         try {
-            con = ds.getConnection();
             Logger.getLogger(VentaMySQLDAO.class.getName()).log(Level.INFO, "Ejecutando insert...");
             
             pstmt = con.prepareStatement("INSERT INTO venta" +
@@ -50,7 +50,6 @@ public class VentaMySQLDAO implements VentaDAO {
             pstmt.setString(5,  v.getAsesor());
             
             pstmt.execute();
-            con.close();
             respuesta = true;
             
         } catch (SQLException ex) {
@@ -60,13 +59,13 @@ public class VentaMySQLDAO implements VentaDAO {
     }
 
     @Override
-    public ArrayList selectVentas(DataSource ds, VentaDTO v) {
+    public ArrayList selectVentas(Conexion conexion, VentaDTO v) {
          ArrayList rta = new ArrayList();
         
         Statement s;
         try {
             
-            s = ds.getConnection().createStatement();
+            s = conexion.conn.createStatement();
             ResultSet rs = s.executeQuery ("select idventa,  cliente_cli_identificacion,    vehiculo_idcarro,ven_fecha, ven_precio,usuario_asesor,ven_fecha_registra FROM venta");
             while (rs.next())
             {
@@ -83,7 +82,6 @@ public class VentaMySQLDAO implements VentaDAO {
             System.out.println("aux----"+aux);
             }
             
-            s.close();
         } catch (SQLException ex) {
             Logger.getLogger(VentaMySQLDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -91,7 +89,7 @@ public class VentaMySQLDAO implements VentaDAO {
     }
 
     @Override
-    public boolean updateVenta(DataSource ds, VentaDTO v) {
+    public boolean updateVenta(Conexion conexion, VentaDTO v) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

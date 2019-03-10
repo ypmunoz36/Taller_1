@@ -6,17 +6,16 @@
 package controladores;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 import modelo.DAOs.DAOFactory;
 import modelo.DTOs.VehiculoDTO;
-import util.MyDataSourceFactory;
+import util.Conexion;
+import util.logs.LoggerFactory;
+import util.logs.LoggerInterface;
 
 /**
  *
@@ -68,11 +67,15 @@ public class ControladorActualizarVehiculo extends HttpServlet {
         v.setPrecioVenta( Integer.valueOf(precioVenta) );
         v.setNombre(nombre);
         
-        DataSource ds = null;
-        ds = MyDataSourceFactory.getMySQLDataSource();
+        Conexion sql = Conexion.getConnection();
+        
+       LoggerFactory factory = new LoggerFactory();
+        LoggerInterface logger = factory.getLogger();
+        if(sql!= null)
+            logger.log("ActualizarVehiculo se conecto correctamente a mysql singleton");
         
         DAOFactory pbd = (DAOFactory) DAOFactory.getDAOFactory(1);
-        pbd.getVehiculoDAO().updateVehiculo(ds, v);
+        pbd.getVehiculoDAO().updateVehiculo(sql, v);
         
         RequestDispatcher rd = request.getRequestDispatcher("./paginas/crearVehiculo.jsp");
         rd.forward(request, response);

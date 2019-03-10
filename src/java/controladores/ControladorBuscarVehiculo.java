@@ -6,18 +6,16 @@
 package controladores;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 import modelo.DAOs.DAOFactory;
-import modelo.DTOs.ClienteDTO;
 import modelo.DTOs.VehiculoDTO;
-import util.MyDataSourceFactory;
+import util.Conexion;
+import util.logs.LoggerFactory;
+import util.logs.LoggerInterface;
 
 /**
  *
@@ -42,11 +40,15 @@ public class ControladorBuscarVehiculo extends HttpServlet {
         if(!identificacion.equals(""))
             v.setVin(identificacion);
         
-        DataSource ds = null;
-        ds = MyDataSourceFactory.getMySQLDataSource();
+        Conexion sql = Conexion.getConnection();
         
-        DAOFactory df  = (DAOFactory) DAOFactory.getDAOFactory(1);
-        VehiculoDTO cliente = df.getVehiculoDAO().selectVehiculo(ds, v);
+       LoggerFactory factory = new LoggerFactory();
+        LoggerInterface logger = factory.getLogger();
+        if(sql!= null)
+            logger.log("BuscarVehiculo se conecto correctamente a mysql singleton");
+        
+        DAOFactory df  =  DAOFactory.getDAOFactory(1);
+        VehiculoDTO cliente = df.getVehiculoDAO().selectVehiculo(sql, v);
         
         // Cuando retorna el cliente consultado
         request.setAttribute("vehiculoConsultado", cliente);

@@ -8,13 +8,14 @@ package modelo.DAOs;
 import java.util.ArrayList;
 import javax.sql.DataSource;
 import modelo.DTOs.ClienteDTO;
+import util.Conexion;
 
 /**
  *
  * @author Yury Muñoz
  */
 public interface ClienteDAO {
-    public boolean insertCliente(DataSource ds , ClienteDTO c);
-    public ClienteDTO selectCliente(DataSource ds, ClienteDTO c );
-    public boolean updateCliente(DataSource ds, ClienteDTO c);
+    public boolean insertCliente(Conexion conexion , ClienteDTO c);
+    public ClienteDTO selectCliente(Conexion conexion, ClienteDTO c );
+    public boolean updateCliente(Conexion conexion, ClienteDTO c);
 }

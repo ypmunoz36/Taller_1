@@ -16,6 +16,7 @@ import modelo.DTOs.ClienteDTO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.logging.Logger;
+import util.Conexion;
 
 /**
  *
@@ -24,14 +25,14 @@ import java.util.logging.Logger;
 public class ClienteMySQLDAO implements ClienteDAO {
 
     @Override
-    public boolean insertCliente(DataSource ds, ClienteDTO c) {
+    public boolean insertCliente(Conexion conexion, ClienteDTO c) {
            
         boolean respuesta = false;
         PreparedStatement pstmt = null;
         Connection con = null;
              
         try {
-            con = ds.getConnection();
+            con = conexion.conn;
             Logger.getLogger(ClienteMySQLDAO.class.getName()).log(Level.INFO, "Ejecutando insertCliente...");
             
             pstmt = con.prepareStatement("INSERT INTO cliente(cli_identificacion," +
@@ -45,7 +46,7 @@ public class ClienteMySQLDAO implements ClienteDAO {
                         "cli_fecha_nac," +
                         "cli_correo," +
                         "cli_descripcion)"
-                    + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+                    + " VALUES (?,?,?,?,?,?,?,?,?,?,?)");
             
             pstmt.setInt(1,c.getIdentificacion());
             pstmt.setString(2, c.getNombre());
@@ -61,7 +62,7 @@ public class ClienteMySQLDAO implements ClienteDAO {
             
               pstmt.execute();
             
-            con.close();
+       
             
             respuesta = true;
             
@@ -72,14 +73,14 @@ public class ClienteMySQLDAO implements ClienteDAO {
     }
 
     @Override
-    public ClienteDTO selectCliente(DataSource ds, ClienteDTO c) {
+    public ClienteDTO selectCliente(Conexion conexion, ClienteDTO c) {
         
          ClienteDTO rta = new ClienteDTO();
         
         Statement s;
         try {
             
-            s = ds.getConnection().createStatement();
+            s = conexion.conn.createStatement();
             ResultSet rs = s.executeQuery ("select cli_identificacion," +
                 "   cli_nombres," +
                 "   cli_apellidos," +
@@ -109,9 +110,8 @@ public class ClienteMySQLDAO implements ClienteDAO {
                 
             }
             
-            s.close();
         } catch (SQLException ex) {
-            Logger.getLogger(PersonaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ClienteMySQLDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         
@@ -119,12 +119,12 @@ public class ClienteMySQLDAO implements ClienteDAO {
     }
 
     @Override
-    public boolean updateCliente(DataSource ds, ClienteDTO c) {
+    public boolean updateCliente(Conexion conexion, ClienteDTO c) {
         Connection con = null;
         PreparedStatement pstmt = null;
         boolean respuesta = false;
+        con = conexion.conn;
         try {            
-             con = ds.getConnection();
             Logger.getLogger(ClienteMySQLDAO.class.getName()).log(Level.INFO, "Ejecutando updateCliente...");
             
             pstmt = con.prepareStatement("UPDATE cliente "
@@ -156,7 +156,7 @@ public class ClienteMySQLDAO implements ClienteDAO {
             pstmt.setInt(11, c.getIdentificacion());
             pstmt.executeUpdate();
             
-            con.close();
+            
             
             respuesta = true;
         } catch (SQLException ex) {

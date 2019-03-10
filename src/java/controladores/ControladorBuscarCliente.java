@@ -16,7 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import modelo.DAOs.DAOFactory;
 import modelo.DTOs.ClienteDTO;
-import util.MyDataSourceFactory;
+import util.Conexion;
+import util.logs.LoggerFactory;
+import util.logs.LoggerInterface;
 
 /**
  *
@@ -41,11 +43,15 @@ public class ControladorBuscarCliente extends HttpServlet {
         if(!identificacion.equals(""))
             c.setIdentificacion( Integer.parseInt(identificacion) );
         
-        DataSource ds = null;
-        ds = MyDataSourceFactory.getMySQLDataSource();
+         Conexion sql = Conexion.getConnection();
         
-        DAOFactory df  = (DAOFactory) DAOFactory.getDAOFactory(1);
-        ClienteDTO cliente = df.getClienteDAO().selectCliente(ds, c);
+        LoggerFactory factory = new LoggerFactory();
+        LoggerInterface logger = factory.getLogger();
+        if(sql!= null)
+            logger.log("BuscarCliente se conecto correctamente a mysql singleton");
+        
+        DAOFactory df  = DAOFactory.getDAOFactory(1);
+        ClienteDTO cliente = df.getClienteDAO().selectCliente(sql, c);
         
         // Cuando retorna el cliente consultado
         request.setAttribute("clienteConsultado", cliente);
